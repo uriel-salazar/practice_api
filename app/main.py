@@ -13,6 +13,10 @@ Base.metadata.create_all(bind=engine)
 async def welcome():
     return "<h1> Welcome ! </h1>"
 
+@app.get("/users")
+async def get_users():
+    pass
+
 
 
 if __name__ == "__main__":
