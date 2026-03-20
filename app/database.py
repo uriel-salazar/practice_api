@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
+from models import Session
 import os
 
 load_dotenv()
@@ -20,3 +21,17 @@ else:
 class Base(DeclarativeBase):
     pass
 
+# Function for -dependency injection -
+def get_db():
+    """ Dependency injection for database 
+
+    Yields:
+        db: Session()
+    """
+    db=Session() # A database session created.
+    
+    try: 
+        yield db # It's injected to whoever needs it.
+        
+    finally: #Then, we close the database session.
+        db.close()
