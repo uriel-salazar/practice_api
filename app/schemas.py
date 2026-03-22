@@ -15,6 +15,12 @@ class Create_User(BaseModel):
     
 class User_Response(BaseModel):
     id : int
+    age:int
     name : str
     email : str
+    
+class Update_User(BaseModel):
+    name:str
+    age:int = Field(..., gt=15)
+    email:EmailStr
     

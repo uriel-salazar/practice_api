@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import User,Post
-from schemas import Create_User
+from schemas import Create_User,Update_User
 
 
 def get_user(db:Session,user_id=User.id):
@@ -42,7 +42,7 @@ def create_user(db:Session,Create_User):
     Returns:
         _type_: Returns a query to database.
     """
-    user=User(name=Create_User.name,age=Create_User.age,
+    user=User(name = Create_User.name,age = Create_User.age,
            email = Create_User.email)
     
     if user.age < 15:
@@ -52,3 +52,20 @@ def create_user(db:Session,Create_User):
         db.commit()
         db.refresh(user)
         return user
+
+def update_user(db:Session,update_u:Update_User,id:int):
+    user=db.query(User).filter(User.id==id).first()
+    
+    if user is None:
+        return None
+    
+    user.name = update_u.name
+    user.age = update_u.age
+    user.email = update_u.email
+    
+    db.commit()
+    db.refresh(user)
+    
+    
+    
+    
