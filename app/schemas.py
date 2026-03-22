@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field,EmailStr
 
 
 class Create_User(BaseModel):
@@ -10,7 +10,7 @@ class Create_User(BaseModel):
     """
     name : str 
     age : int = Field(..., gt=15)
-    email : str 
+    email : EmailStr
     
     
 class User_Response(BaseModel):
