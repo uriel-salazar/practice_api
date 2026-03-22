@@ -35,7 +35,7 @@ async def get_user(user_id=int,db: Session=Depends(get_db)):
   
 @app.post("/create_users",response_model=User_Response)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
-    
+
     return crud.create_user(db,u_create)
 
 if __name__ == "__main__":
