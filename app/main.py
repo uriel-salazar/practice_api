@@ -16,10 +16,13 @@ async def welcome():
     return "<h1> Welcome ! </h1>"
 
 
-@app.get("/users",response_model=list[User_Response])
-async def get_users(db:Session = Depends(get_db)):
+@app.get("/users/all",response_model=list[User_Response])
+async def get_users(skip:int=1,limit: int=10,
+         db:Session = Depends(get_db)):
     
-    pass
+    return crud.get_users(db,skip =skip,limit =limit)
+
+    
 @app.get("/user",response_model=User_Response)
 async def get_user(user_id=int,db: Session=Depends(get_db)):
     
@@ -29,6 +32,11 @@ async def get_user(user_id=int,db: Session=Depends(get_db)):
           HTTPException(status_code=404,detail="User not found")
       
       return user
+  
+@app.post("/create_users",response_model=User_Response)
+async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
+    
+    return crud.create_user(db,u_create)
 
 if __name__ == "__main__":
     uvicorn.run("main:app",

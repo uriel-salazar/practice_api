@@ -1,21 +1,22 @@
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase
-from models import Session
+from sqlalchemy.orm import sessionmaker,DeclarativeBase
 import os
 
+
 load_dotenv()
-"""loads all my environment va"""
+"""loads all my environment variables"""
 
 # Gets database URL. 
 url = os.environ.get("DATABASE_URL")
 
+
 if url:
     #database connection
     engine = create_engine(url, echo=True)
-
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 else:
-    print("Naoo")
+    print("NO DATABASE")
 
 
 class Base(DeclarativeBase):
@@ -28,7 +29,7 @@ def get_db():
     Yields:
         db: Session()
     """
-    db=Session() # A database session created.
+    db=SessionLocal() # A database session created.
     
     try: 
         yield db # It's injected to whoever needs it.
