@@ -1,5 +1,5 @@
-from database import Base,engine
-from sqlalchemy.orm import Mapped,mapped_column,relationship,Session,sessionmaker
+from database import Base
+from sqlalchemy.orm import Mapped,mapped_column,relationship
 from sqlalchemy import ForeignKey
 
 class User(Base):
@@ -30,10 +30,6 @@ class Post(Base):
     name:Mapped[str] = mapped_column(nullable=False)
     description:Mapped[str] = mapped_column(nullable=True)
     user:Mapped['User'] = relationship('User',back_populates='posts')
-
-Session=sessionmaker(bind=engine)
-
-
 
 
 
