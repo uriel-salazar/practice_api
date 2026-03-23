@@ -1,10 +1,11 @@
+
 from fastapi import FastAPI,Depends,HTTPException
 from fastapi.responses import HTMLResponse
-from schemas import User_Response,Create_User,Update_User
+from .schemas import User_Response,Create_User,Update_User
 from sqlalchemy.orm import Session
-from database import Base,engine,get_db
-from models import User,Post
-import crud
+from .database import Base,engine,get_db
+from .models import User,Post
+from . import crud
 import uvicorn
 
 app=FastAPI()
@@ -40,18 +41,17 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
 
 
 @app.put("/users/{id}",response_model=User_Response)
-async def update_user(id:int,update_u:Update_User,db:Session=Depends(get_db)):
+async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     
-    update=crud.update_user(db,update_u,id)
+    user=crud.update_user(db,update_u,id)
     
-    if update is None:
+    if user is None:
         raise HTTPException(status_code=404,detail="User not found")
     
-    return update
+    return user
     
     
      
   
 if __name__ == "__main__":
-    uvicorn.run("main:app",
-    host="localhost", reload=True)
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)
