@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
 from .schemas import Create_User,Update_User
+from fastapi import HTTPException
 
 
 def get_user(db:Session,user_id=User.id):
@@ -65,6 +66,8 @@ def update_user(db:Session,update_u:Update_User,id:int):
     
     db.commit()
     db.refresh(user)
+    return user
+
     
     
     

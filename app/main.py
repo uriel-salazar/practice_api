@@ -30,12 +30,18 @@ async def get_user(user_id=int,db: Session=Depends(get_db)):
       user=db.query(User).filter(User.id == user_id).first()
       
       if not user:
-          HTTPException(status_code=404,detail="User not found")
+           raise HTTPException(status_code=404,detail="User not found")
       
       return user
   
 @app.post("/create_users",response_model=User_Response)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
+    
+    # Check if email already exists : 
+    email_exist=db.query(User).filter(User.email==User.email).first()
+    # If it exists, it raises an error.
+    if email_exist:
+        raise HTTPException(status_code=400,detail='Email already exists')
 
     return crud.create_user(db,u_create)
 
