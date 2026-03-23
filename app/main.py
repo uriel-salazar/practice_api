@@ -24,7 +24,7 @@ async def get_users(skip:int=1,limit: int=10,
     return crud.get_users(db,skip =skip,limit =limit)
 
     
-@app.get("/user",response_model=User_Response)
+@app.get("/user{id}",response_model=User_Response)
 async def get_user(user_id=int,db: Session=Depends(get_db)):
     
       user=db.query(User).filter(User.id == user_id).first()
