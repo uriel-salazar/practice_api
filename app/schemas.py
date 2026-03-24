@@ -1,26 +1,45 @@
-from pydantic import BaseModel,Field,EmailStr,field_validator
+from pydantic import BaseModel,Field,EmailStr
 
 
 class Create_User(BaseModel):
-    """ A Pydantic model that check users email, age
-    and validate if their name is above 15.
-
-    Args:
-        BaseModel (class): A base class for creating pydantic models. 
+    """ A Pydantic model that check users email, age and email. 
+    
+    Attributes:
+        id (int): Unique identifier of the user.
+        age (int): Age of the user. Must be greater than 15 and less than 120.
+        name (str): Full name of the user.
+        email (str): Email address of the user.
+    
     """
-    name : str =Field(...,min_length=3,max_length=20)
+    
+    name : str =Field(...,min_length=3,max_length=40)
+    # An age greater between 15 and 120 years old 
     age : int = Field(..., gt=15,le=120)
     email : EmailStr
        
     
 class User_Response(BaseModel):
+    """
+    Represents a user in API responses.
+
+    Attributes:
+        id (int): Unique identifier of the user.
+        age (int): Age of the user. Must be greater than 15 and less than 120.
+        name (str): Full name of the user.
+        email (str): Email address of the user.
+    """
     id : int
     age:int
     name : str
     email : str
     
 class Update_User(BaseModel):
-    name:str = Field(...,min_length=3,max_length=20)
+    """ Pydantic model for updating.
+
+    Args:
+        BaseModel (class): A base class for creating pydantic models. 
+    """
+    name:str = Field(...,min_length=3,max_length=40)
     age:int = Field(..., gt=15,le=120)
     email:EmailStr
     
