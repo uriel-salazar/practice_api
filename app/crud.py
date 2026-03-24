@@ -1,51 +1,47 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
 from .schemas import Create_User,Update_User
-from fastapi import HTTPException
 
 
-def get_user(db:Session,user_id=User.id):
-    """ Makes a query to the datbase get the user's id. 
+def get_user(db: Session, user_id=User.id):
+    """Gets a single user by their ID.
 
     Args:
         db (Session): A database session.
-        user_id (int)): An id from the User's table. 
+        user_id (int): The user's ID.
 
     Returns:
-        _type_: A query to database
+        User: The matching user, or None if not found.
     """
     return db.query(User).filter(User.id == user_id).first()
-    
-def get_users(db:Session, skip: int, limit: int):
-    """ Makes a query to get all user by passing 
-    query parameters (skip and limit)
+
+
+def get_users(db: Session, skip: int, limit: int):
+    """Gets a list of users with pagination.
 
     Args:
-        db (Session): Database session
-        skip (int): Starts from n items
-        limit (int): Returns n items 
+        db (Session): A database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
 
     Returns:
-        _type_: A query to database.
+        list[User]: A list of users.
     """
     return db.query(User).offset(skip).limit(limit).all()
 
 
-def create_user(db:Session,Create_User):
-    """ Creates an user
-        If the user have less than 15 years old, it will raise an
-        exception.
+def create_user(db: Session, Create_User):
+    """Creates a new user. Users under 15 years old will not be created.
 
     Args:
-        db (Session): Database session
-        Create_User (class): Schema's response to create an user.
+        db (Session): A database session.
+        Create_User (CreateUser): The schema containing the user's data.
 
     Returns:
-        _type_: Returns a query to database.
+        User: The newly created user, or None if the age requirement isn't met.
     """
-    user=User(name = Create_User.name,age = Create_User.age,
-           email = Create_User.email)
-    
+    user = User(name=Create_User.name, age=Create_User.age, email=Create_User.email)
+
     if user.age < 15:
         return None
     else:
@@ -54,16 +50,27 @@ def create_user(db:Session,Create_User):
         db.refresh(user)
         return user
 
-def update_user(db:Session,update_u:Update_User,id:int):
-    user=db.query(User).filter(User.id==id).first()
-    
+
+def update_user(db: Session, update_u: Update_User, id: int):
+    """Updates an existing user by their ID.
+
+    Args:
+        db (Session): A database session.
+        update_u (Update_User): The schema containing the updated data.
+        id (int): The ID of the user to update.
+
+    Returns:
+        User: The updated user, or None if the user wasn't found.
+    """
+    user = db.query(User).filter(User.id == id).first()
+
     if user is None:
         return None
-    
+
     user.name = update_u.name
     user.age = update_u.age
     user.email = update_u.email
-    
+
     db.commit()
     db.refresh(user)
     return user

@@ -20,6 +20,8 @@ else:
 
 
 class Base(DeclarativeBase):
+    """ Declarative Base to inherit to sql tables.
+    """
     pass
 
 # Function for -dependency injection -
