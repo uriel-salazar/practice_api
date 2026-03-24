@@ -8,8 +8,8 @@ class Create_User(BaseModel):
     Args:
         BaseModel (class): A base class for creating pydantic models. 
     """
-    name : str 
-    age : int = Field(..., gt=15)
+    name : str =Field(...,min_length=3,max_length=20)
+    age : int = Field(..., gt=15,le=120)
     email : EmailStr
        
     
@@ -20,7 +20,7 @@ class User_Response(BaseModel):
     email : str
     
 class Update_User(BaseModel):
-    name:str
-    age:int = Field(..., gt=15)
+    name:str = Field(...,min_length=3,max_length=20)
+    age:int = Field(..., gt=15,le=120)
     email:EmailStr
     

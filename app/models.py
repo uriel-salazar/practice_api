@@ -1,6 +1,6 @@
 from .database import Base
 from sqlalchemy.orm import Mapped,mapped_column,relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey,String
 
 class User(Base):
     """ A table that inherits from the declarative Base
@@ -11,9 +11,9 @@ class User(Base):
     """
     __tablename__='user'
     id:Mapped[int] = mapped_column(primary_key=True)
-    name:Mapped[str] = mapped_column(nullable=False)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
     age:Mapped[int] = mapped_column(nullable=False)
-    email:Mapped[str] = mapped_column(nullable=False,unique=True)
+    email:Mapped[str] = mapped_column(String(254),nullable=False,unique=True)
     posts:Mapped[list["Post"]] =relationship("Post",back_populates='user')
 
 

@@ -38,7 +38,7 @@ async def get_user(user_id=int,db: Session=Depends(get_db)):
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     
     # Check if email already exists : 
-    email_exist=db.query(User).filter(User.email==User.email).first()
+    email_exist=db.query(User).filter(User.email==u_create.email).first()
     # If it exists, it raises an error.
     if email_exist:
         raise HTTPException(status_code=400,detail='Email already exists')
