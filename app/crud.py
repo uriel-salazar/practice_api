@@ -87,6 +87,3 @@ def delete_user(db:Session,id:int):
     return delete
         
         
-    
-    
-    

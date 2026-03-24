@@ -1,11 +1,15 @@
-
 from fastapi import FastAPI,Depends,HTTPException
-from fastapi.responses import HTMLResponse,PlainTextResponse
-from .schemas import User_Response,Create_User,Update_User
+from fastapi import FastAPI,Depends,HTTPException
+from fastapi.responses import HTMLResponse
+from schemas import User_Response,Create_User
 from sqlalchemy.orm import Session
-from .database import Base,engine,get_db
-from .models import User,Post
-from . import crud
+from database import Base,engine,get_db
+from schemas import User_Response,Create_User,Update_User
+from sqlalchemy.orm import Session
+from database import Base,engine,get_db
+from models import User,Post
+import crud
+import crud
 import uvicorn
 
 app=FastAPI()
@@ -109,4 +113,5 @@ def delete_user(id:int,db: Session = Depends(get_db)):
      
   
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("main:app",
+    host="localhost", reload=True)
