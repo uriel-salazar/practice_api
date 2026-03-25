@@ -98,8 +98,16 @@ async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     
     return user
     
+@app.delete("/delete/users/{id}")
+def delete_user(id:int,db: Session = Depends(get_db)):
+    delete=crud.delete_user(db,id)
     
+    if delete is None:
+        raise HTTPException(status_code=400,detail="User not found")
+    
+    return f"User deleted succesful!"
      
+
   
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)

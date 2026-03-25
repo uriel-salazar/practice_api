@@ -74,3 +74,15 @@ def update_user(db: Session, update_u: Update_User, id: int):
     db.commit()
     db.refresh(user)
     return user
+
+def delete_user(db:Session,id:int):
+    delete=db.query(User).filter(User.id==id).first()
+    if delete is None:
+        return None
+    
+    if delete:
+        db.delete(delete)
+        db.commit()
+        db.refresh
+    return delete
+        
