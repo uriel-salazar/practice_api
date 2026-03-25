@@ -111,6 +111,9 @@ def delete_user(id:int,db: Session = Depends(get_db)):
     
     return f"User deleted succesful!"
      
+@app.post("/create_post")
+def create_post(db:Session,id=User.id,
+    pass
   
 if __name__ == "__main__":
     uvicorn.run("main:app",

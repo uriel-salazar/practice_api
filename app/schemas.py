@@ -19,21 +19,6 @@ class Create_User(BaseModel):
     age : int = Field(..., gt=15,le=120)
     email : EmailStr
        
-    """ A Pydantic model that check users email, age and email. 
-    
-    Attributes:
-        id (int): Unique identifier of the user.
-        age (int): Age of the user. Must be greater than 15 and less than 120.
-        name (str): Full name of the user.
-        email (str): Email address of the user.
-    
-    """
-    
-    name : str =Field(...,min_length=3,max_length=40)
-    # An age greater between 15 and 120 years old 
-    age : int = Field(..., gt=15,le=120)
-    email : EmailStr
-       
     
 class User_Response(BaseModel):
     """
@@ -67,13 +52,22 @@ class Update_User(BaseModel):
     """
     name:str = Field(...,min_length=3,max_length=40)
     age:int = Field(..., gt=15,le=120)
-    """ Pydantic model for updating.
-
-    Args:
-        BaseModel (class): A base class for creating pydantic models. 
-    """
-    name:str = Field(...,min_length=3,max_length=40)
-    age:int = Field(..., gt=15,le=120)
     email:EmailStr
+
+class Create_Post(BaseModel):
+      name:str
+      description:str
+
+class Response_Post(BaseModel):
+    id : int
+    name : str
+    description : str | None = None
+    user_id : int
+    class Config():
+        from_attributes = True
+        
     
+    
+      
+      
     
