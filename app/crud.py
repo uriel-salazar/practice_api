@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
-from .schemas import Create_User,Update_User
+from .schemas import Create_User,Update_User,Create_Post
 
 
 def get_user(db: Session, user_id=User.id):
@@ -85,4 +85,7 @@ def delete_user(db:Session,id:int):
         db.commit()
         db.refresh
     return delete
-        
+
+def create_post(db:Session,create_post=Create_Post,
+            user=User):
+    pass

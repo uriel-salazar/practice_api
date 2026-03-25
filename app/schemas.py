@@ -42,4 +42,21 @@ class Update_User(BaseModel):
     name:str = Field(...,min_length=3,max_length=40)
     age:int = Field(..., gt=15,le=120)
     email:EmailStr
+
+class Create_Post(BaseModel):
+      name:str
+      description:str
+
+class Response_Post(BaseModel):
+    id : int
+    name : str
+    description : str | None = None
+    user_id : int
+    class Config():
+        from_attributes = True
+        
+    
+    
+      
+      
     
