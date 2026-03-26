@@ -57,6 +57,7 @@ class Update_User(BaseModel):
 class Create_Post(BaseModel):
       name:str
       description:str
+      user_id:int
 
 class Response_Post(BaseModel):
     id : int
