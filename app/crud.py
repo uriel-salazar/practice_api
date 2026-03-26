@@ -86,6 +86,15 @@ def delete_user(db:Session,id:int):
         db.refresh
     return delete
 
-def create_post(db:Session,create_post=Create_Post,
-            user=User):
-    pass
+def create_post(db: Session, post: Create_Post) -> Post:
+    new_post = Post(
+        name=post.name,
+        description=post.description,
+        user_id=post.user_id
+    )
+
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+
+    return new_post

@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI,Depends,HTTPException
 from fastapi.responses import HTMLResponse
-from .schemas import User_Response,Create_User,Update_User
+from .schemas import User_Response,Create_User,Update_User,Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from .database import Base,engine,get_db
 from .models import User,Post
@@ -107,9 +107,9 @@ def delete_user(id:int,db: Session = Depends(get_db)):
     
     return f"User deleted succesful!"
      
-@app.post("/create_post")
-def create_post(db:Session,id=User.id,
-    pass
-  
+@app.post("/posts",response_model=Response_Post)
+def create_post_endpoint(post: Create_Post, db: Session = Depends(get_db)):
+    return crud.create_post(db,post)
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000, reload=False)
