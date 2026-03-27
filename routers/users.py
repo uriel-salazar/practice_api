@@ -10,12 +10,10 @@ import uvicorn
 app= FastAPI()
 router = APIRouter()
 
-@app.get("/",response_class=HTMLResponse)
-async def welcome():
-    return "<h1> Welcome ! </h1>"
 
 
-@app.get("/",response_model=list[User_Response])
+
+@router.get("/",response_model=list[User_Response])
 async def get_users(skip:int=1,limit: int=10,
          db:Session = Depends(get_db)):
     """ Gets all user from a list of "User Response"
@@ -32,7 +30,7 @@ async def get_users(skip:int=1,limit: int=10,
     return crud.get_users(db,skip =skip,limit =limit)
 
     
-@app.get("/",response_model=User_Response)   
+@router.get("/{id}",response_model=User_Response)   
 async def get_user(id=int,db: Session=Depends(get_db)):
     """ Finds an user by their id. If isn't founded,
     it will raise an status code of 404.
@@ -55,7 +53,7 @@ async def get_user(id=int,db: Session=Depends(get_db)):
       
     return user
   
-@app.post("/",response_model=User_Response)
+@router.post("/",response_model=User_Response)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """ Creates a new user 
 
@@ -79,7 +77,7 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     return crud.create_user(db,u_create)
 
 
-@app.put("/",response_model=User_Response)
+@router.put("/{id}",response_model=User_Response)
 async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     """
     Updates an user by their id.
@@ -95,3 +93,12 @@ async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
         raise HTTPException(status_code=404,detail="User not found")
     
     return user
+
+@app.delete("/{id}")
+def delete_user(id:int,db: Session = Depends(get_db)):
+    delete=crud.delete_user(db,id)
+    
+    if delete is None:
+        raise HTTPException(status_code=400,detail="User not found")
+    
+    return f"User deleted succesful!"
