@@ -9,5 +9,13 @@ import uvicorn
 router=APIRouter()
 
 @router.post("/posts",response_model=Response_Post)
-def create_post_endpoint(post: Create_Post, db: Session = Depends(get_db)):
+def create_post(post: Create_Post, db: Session = Depends(get_db)):
     return crud.create_post(db,post)
+
+@router.get("/posts/{user_id}",response_model=Response_Post)
+def get_post(user_id:int,db: Session = Depends(get_db)):
+    get_one=crud.get_post(db,user_id)
+    if get_one is None:
+        HTTPException(status_code=404,detail="We couldn't find your post.")
+    return get_one
+    

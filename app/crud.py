@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
-from .schemas import Create_User,Update_User,Create_Post
+from .schemas import Create_User,Update_User,Create_Post,Response_Post
 
 
 def get_user(db: Session, user_id=User.id):
@@ -98,3 +98,8 @@ def create_post(db: Session, post: Create_Post) -> Post:
     db.refresh(new_post)
 
     return new_post
+
+def get_post(db:Session,id:int):
+    
+    get=db.query(Post).filter(Post.user_id==id).first()
+    return get
