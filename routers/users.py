@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 
-@router.get("/",response_model=list[User_Response])
+@router.get("",response_model=list[User_Response])
 async def get_users(skip:int=1,limit: int=10,
          db:Session = Depends(get_db)):
     """ Gets all user from a list of "User Response"
@@ -53,7 +53,7 @@ async def get_user(id=int,db: Session=Depends(get_db)):
       
     return user
   
-@router.post("/",response_model=User_Response)
+@router.post("",response_model=User_Response)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """ Creates a new user 
 
