@@ -55,13 +55,11 @@ class Update_User(BaseModel):
     email:EmailStr
 
 class Create_Post(BaseModel):
-      name:str
       description:str
       user_id:int
 
 class Response_Post(BaseModel):
     id : int
-    name : str
     description : str | None = None
     user_id : int
     class Config():

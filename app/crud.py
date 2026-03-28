@@ -88,7 +88,6 @@ def delete_user(db:Session,id:int):
 
 def create_post(db: Session, post: Create_Post) -> Post:
     new_post = Post(
-        name=post.name,
         description=post.description,
         user_id=post.user_id
     )
