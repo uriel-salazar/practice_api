@@ -8,11 +8,11 @@ from app import crud
 import uvicorn
 router=APIRouter()
 
-@router.post("/posts",response_model=Response_Post)
+@router.post("/",response_model=Response_Post)
 def create_post(post: Create_Post, db: Session = Depends(get_db)):
     return crud.create_post(db,post)
 
-@router.get("/posts/{user_id}",response_model=Response_Post)
+@router.get("/{user_id}",response_model=Response_Post)
 def get_post(user_id:int,db: Session = Depends(get_db)):
     get_one=crud.get_post(db,user_id)
     if get_one is None:
