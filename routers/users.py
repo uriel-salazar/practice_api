@@ -102,3 +102,5 @@ def delete_user(id:int,db: Session = Depends(get_db)):
         raise HTTPException(status_code=400,detail="User not found")
     
     return f"User deleted succesful!"
+
+

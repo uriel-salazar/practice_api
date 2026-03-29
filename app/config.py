@@ -17,5 +17,6 @@ class Settings(BaseSettings):
     # Converts env variable from string to int. 
     access_token_expires_minutes:int = 30
     
-    settings=Settings() #type:ignore
+    
+settings=Settings() #type:ignore
     
