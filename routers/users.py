@@ -1,6 +1,6 @@
 from fastapi import FastAPI,Depends,HTTPException,APIRouter
 from fastapi.responses import HTMLResponse
-from app.schemas import User_Response,Create_User,Update_User,Create_Post,Response_Post
+from app.schemas import UserPublic,Create_User,Update_User,Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from app.database import Base,engine,get_db
 from app.models import User,Post
@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 
-@router.get("",response_model=list[User_Response])
+@router.get("",response_model=list[UserPublic])
 async def get_users(skip:int=1,limit: int=10,
          db:Session = Depends(get_db)):
     """ Gets all user from a list of "User Response"
@@ -30,7 +30,7 @@ async def get_users(skip:int=1,limit: int=10,
     return crud.get_users(db,skip =skip,limit =limit)
 
     
-@router.get("/{id}",response_model=User_Response)   
+@router.get("/{id}",response_model=UserPublic)   
 async def get_user(id=int,db: Session=Depends(get_db)):
     """ Finds an user by their id. If isn't founded,
     it will raise an status code of 404.
@@ -53,7 +53,7 @@ async def get_user(id=int,db: Session=Depends(get_db)):
       
     return user
   
-@router.post("",response_model=User_Response)
+@router.post("",response_model=UserPublic)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """ Creates a new user 
 
@@ -77,7 +77,7 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     return crud.create_user(db,u_create)
 
 
-@router.put("/{id}",response_model=User_Response)
+@router.put("/{id}",response_model=UserPublic)
 async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     """
     Updates an user by their id.

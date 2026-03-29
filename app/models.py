@@ -2,6 +2,7 @@ from .database import Base
 from sqlalchemy.orm import Mapped,mapped_column,relationship
 from sqlalchemy import ForeignKey,String
 
+
 class User(Base):
     """ A table that inherits from the declarative Base
     it prepares a metaobject to  be mapped to a sql table.
@@ -15,6 +16,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     age:Mapped[int] = mapped_column(nullable=False)
     email:Mapped[str] = mapped_column(String(254),nullable=False,unique=True)
+    hashed_password:Mapped[str] = mapped_column(String(200),nullable=False)
     
     posts:Mapped[list["Post"]] = relationship("Post",back_populates='user')
 
