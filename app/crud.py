@@ -44,7 +44,7 @@ def create_user(db: Session, Create_User):
         name=Create_User.name, 
         age=Create_User.age, 
         email=Create_User.email.lower(),
-        password_hash=hash_password(Create_User.password)
+        hashed_password=hash_password(Create_User.password)
         )
 
     if user.age < 15:

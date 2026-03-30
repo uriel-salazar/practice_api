@@ -9,7 +9,7 @@ from .config import settings
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/tokens")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 def hash_password(password:str):
     return password_hash.hash(password)

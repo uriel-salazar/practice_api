@@ -7,7 +7,6 @@ from app.database import Base,engine,get_db
 from app.models import User,Post
 from typing import Annotated
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth import verify_password,create_access_token 
 from app import crud
 from sqlalchemy import func
@@ -113,11 +112,13 @@ async def delete_user(id:int,db: Session = Depends(get_db)):
 @router.post("/token",response_model=Token)
 async def log_in_access(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: Annotated[Session,Depends(get_db)]
 ):
-  query=select(User).where(User.email.lower() == form_data.username.lower())
-  result= await db.execute(query)
-  user = result.scalar_one_or_none()
+    
+  user = db.execute(
+        select(User).where(func.lower(User.email) == form_data.username.lower())
+    ).scalar_one_or_none()
+ 
   
   # If user exists 
   if not user:

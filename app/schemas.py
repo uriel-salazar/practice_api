@@ -17,7 +17,7 @@ class Create_User(BaseModel):
     name : str =Field(...,min_length=3,max_length=40)
     # An age greater between 15 and 120 years old 
     age : int = Field(..., gt=15,le=120)
-    password: str=Field(min_length=8)
+    password: str=Field(...,min_length=8)
     email : EmailStr
        
     
