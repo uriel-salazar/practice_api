@@ -1,10 +1,16 @@
 from fastapi import FastAPI,Depends,HTTPException,APIRouter
 from fastapi.responses import HTMLResponse
-from app.schemas import UserPublic,Create_User,Update_User,Create_Post,Response_Post
+from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from app.schemas import UserPublic,Create_User,Update_User,UserPrivate,Token
 from sqlalchemy.orm import Session
 from app.database import Base,engine,get_db
 from app.models import User,Post
+from typing import Annotated
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.auth import verify_password,create_access_token 
 from app import crud
+from sqlalchemy import func
 import uvicorn
 
 app= FastAPI()
@@ -53,7 +59,7 @@ async def get_user(id=int,db: Session=Depends(get_db)):
       
     return user
   
-@router.post("",response_model=UserPublic)
+@router.post("",response_model=UserPrivate)
 async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """ Creates a new user 
 
@@ -69,7 +75,7 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """
     
     # Check the existence of an email ( to avoid duplicated emails.) : 
-    email_exist=db.query(User).filter(User.email==u_create.email).first()
+    email_exist=db.query(User).filter(func.lower(User.email)==u_create.email.lower()).first()
     # If it exists, it raises an error.
     if email_exist:
         raise HTTPException(status_code=400,detail='Email already exists')
@@ -94,8 +100,8 @@ async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     
     return user
 
-@app.delete("/{id}")
-def delete_user(id:int,db: Session = Depends(get_db)):
+@router.delete("/{id}")
+async def delete_user(id:int,db: Session = Depends(get_db)):
     delete=crud.delete_user(db,id)
     
     if delete is None:
@@ -104,3 +110,40 @@ def delete_user(id:int,db: Session = Depends(get_db)):
     return f"User deleted succesful!"
 
 
+@router.post("/token",response_model=Token)
+async def log_in_access(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[AsyncSession, Depends(get_db)]
+):
+  query=select(User).where(User.email.lower() == form_data.username.lower())
+  result= await db.execute(query)
+  user = result.scalar_one_or_none()
+  
+  # If user exists 
+  if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password"
+        )
+
+  #Verifies the password. 
+  if  not verify_password(form_data.password, user.hashed_password):
+        
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password"
+        )
+  
+  # creates a token
+  access_token = create_access_token(
+        data={"sub": user.email}
+    )
+
+    #returns the bearer token
+  return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+  
+      
+  

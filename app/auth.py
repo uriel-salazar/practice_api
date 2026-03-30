@@ -4,7 +4,7 @@ from fastapi import Depends,FastAPI,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from jose import JWTError,jwt
 from passlib.context import CryptContext
-from config import settings
+from .config import settings
 
 
 password_hash = PasswordHash.recommended()
@@ -35,6 +35,8 @@ def create_access_token(data:dict,expires_delta:timedelta | None = None) -> str:
         algorithm = settings.algorithm,
     )
     return encoded_jwt # returns JWT acces token.
+
+
     
 
 

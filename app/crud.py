@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
 from .schemas import Create_User,Update_User,Create_Post,Response_Post
-
+from .auth import hash_password
 
 def get_user(db: Session, user_id=User.id):
     """Gets a single user by their ID.
@@ -40,7 +40,12 @@ def create_user(db: Session, Create_User):
     Returns:
         User: The newly created user, or None if the age requirement isn't met.
     """
-    user = User(name=Create_User.name, age=Create_User.age, email=Create_User.email)
+    user = User(
+        name=Create_User.name, 
+        age=Create_User.age, 
+        email=Create_User.email.lower(),
+        password_hash=hash_password(Create_User.password)
+        )
 
     if user.age < 15:
         return None
