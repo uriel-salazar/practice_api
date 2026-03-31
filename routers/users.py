@@ -1,13 +1,12 @@
 from fastapi import FastAPI,Depends,HTTPException,APIRouter
-from fastapi.responses import HTMLResponse
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas import UserPublic,Create_User,Update_User,UserPrivate,Token
 from sqlalchemy.orm import Session
-from app.database import Base,engine,get_db
-from app.models import User,Post
+from app.database import get_db
+from app.models import User
 from typing import Annotated
 from sqlalchemy import select
-from app.auth import verify_password,create_access_token 
+from app.auth import verify_password,create_access_token,get_current_user
 from app import crud
 from sqlalchemy import func
 import uvicorn
@@ -146,5 +145,7 @@ async def log_in_access(
         "token_type": "bearer"
     }
   
-      
+@router.get("/me")
+async def read_users_me(current_user: str = Depends(get_current_user)):
+    return {"User": current_user}
   
