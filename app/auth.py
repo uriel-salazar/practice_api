@@ -1,9 +1,8 @@
 from datetime import UTC,datetime,timedelta
 from pwdlib import PasswordHash
-from fastapi import Depends,FastAPI,HTTPException,status
+from fastapi import Depends,HTTPException
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from jose import JWTError,jwt
-from passlib.context import CryptContext
 from .config import settings
 from dotenv import load_dotenv
 import os
@@ -11,7 +10,7 @@ import os
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
 
 def hash_password(password:str):
     return password_hash.hash(password)
@@ -44,6 +43,7 @@ load_dotenv()
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGORITHM="HS256"
 
+
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY , algorithms=[ALGORITHM])
@@ -55,7 +55,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         return user_id
 
     except JWTError:
-        raise Exception("Invalid token")
+        raise HTTPException(status_code=404,detail="Not found")
 
 
 
