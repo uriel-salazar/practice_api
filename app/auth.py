@@ -38,24 +38,22 @@ def create_access_token(data:dict,expires_delta:timedelta | None = None) -> str:
     return encoded_jwt # returns JWT acces token.
 
 
-load_dotenv()
-
-SECRET_KEY=os.getenv("SECRET_KEY")
-ALGORITHM="HS256"
-
-
 def get_current_user(token: str = Depends(oauth2_scheme)):
+    """We a use our variables .env from our class settings,
+    instead of passing it directly from load dotenv()"""
+    
     try:
-        payload = jwt.decode(token, SECRET_KEY , algorithms=[ALGORITHM])
+        payload = jwt.decode(token,
+                             settings.secret_key.get_secret_value(),algorithms=[settings.algorithm],)
         user_id = payload.get("sub")
 
         if user_id is None:
-            raise Exception("Invalid token")
+            raise HTTPException(status_code=401,detail="Invalid Token")
 
         return user_id
 
     except JWTError:
-        raise HTTPException(status_code=404,detail="Not found")
+        raise HTTPException(status_code=401,detail="Invalid token")
 
 
 
