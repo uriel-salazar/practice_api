@@ -33,6 +33,11 @@ async def get_users(skip:int=1,limit: int=10,
     
     return crud.get_users(db,skip =skip,limit =limit)
 
+
+@router.get("/me")
+async def read_users_me(current_user: str = Depends(get_current_user)):
+   return {"email": current_user}
+  
     
 @router.get("/{id}",response_model=UserPublic)   
 async def get_user(id=int,db: Session=Depends(get_db)):
@@ -144,8 +149,4 @@ async def log_in_access(
         "access_token": access_token,
         "token_type": "bearer"
     }
-  
-@router.get("/me")
-async def read_users_me(current_user: str = Depends(get_current_user)):
-   return {"email": current_user}
   
