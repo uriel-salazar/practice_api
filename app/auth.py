@@ -1,11 +1,10 @@
 from datetime import UTC,datetime,timedelta
 from pwdlib import PasswordHash
 from fastapi import Depends,HTTPException
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError,jwt
 from .config import settings
-from dotenv import load_dotenv
-import os
+
 
 
 password_hash = PasswordHash.recommended()

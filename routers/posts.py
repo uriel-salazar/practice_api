@@ -1,9 +1,7 @@
-from fastapi import FastAPI,Depends,HTTPException,APIRouter
-from fastapi.responses import HTMLResponse
+from fastapi import Depends,HTTPException,APIRouter
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
-from app.database import Base,engine,get_db
-from app.models import User,Post
+from app.database import get_db
 from app import crud
 import uvicorn
 router=APIRouter()

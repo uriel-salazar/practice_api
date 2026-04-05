@@ -3,8 +3,6 @@ from fastapi.responses import HTMLResponse
 from app.database import Base, engine
 from routers import posts, users
 import uvicorn
-from app.auth import get_current_user
-from fastapi import Depends
 
 
 app=FastAPI()

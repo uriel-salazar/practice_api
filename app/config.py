@@ -1,6 +1,6 @@
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from jose import jwt, JWTError
+
 
 class Settings(BaseSettings):
     """ This class inherited from
