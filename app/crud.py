@@ -42,8 +42,8 @@ def create_user(db: Session, Create_User):
     """
     user = User(
         name=Create_User.name, 
-        age=Create_User.age, 
-        email=Create_User.email.lower(),
+        age=Create_User.age ,
+        email=Create_User.email.lower(), # lowers email to lowercase 
         hashed_password=hash_password(Create_User.password)
         )
 

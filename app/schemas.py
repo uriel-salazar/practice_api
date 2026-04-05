@@ -54,7 +54,7 @@ class Update_User(BaseModel):
     Args:
         BaseModel (class): A base class for creating pydantic models. 
     """
-    name:str = Field(...,min_length=3,max_length=40)
+    name:str = Field(...,min_length=3,max_length=30)
     age:int = Field(..., gt=15,le=120)
     email:EmailStr
 
