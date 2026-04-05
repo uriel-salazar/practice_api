@@ -1,14 +1,15 @@
 from fastapi import Depends,HTTPException,APIRouter
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.database import Base,engine,get_db
 from app import crud
+from app.auth import get_current_user
 import uvicorn
 router=APIRouter()
 
-@router.post("",response_model=Response_Post)
-def create_post(post: Create_Post, db: Session = Depends(get_db)):
-    return crud.create_post(db,post)
+@router.post("")
+def create_post(post: Create_Post, db: Session = Depends(get_db),current_user=Depends(get_current_user)):
+    return crud.create_post(db,post,current_user)
 
 
 @router.get("/{user_id}",response_model=Response_Post)

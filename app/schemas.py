@@ -60,12 +60,10 @@ class Update_User(BaseModel):
 
 class Create_Post(BaseModel):
       description:str
-      user_id:int
+    
 
 class Response_Post(BaseModel):
-    id : int
     description : str | None = None
-    user_id : int
     class Config():
         from_attributes = True
         

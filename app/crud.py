@@ -91,10 +91,10 @@ def delete_user(db:Session,id:int):
         db.refresh
     return delete
 
-def create_post(db: Session, post: Create_Post) -> Post:
+def create_post(db: Session, post: Create_Post,current_user:User) -> Post:
     new_post = Post(
         description=post.description,
-        user_id=post.user_id
+        user_id=current_user.id
     )
 
     db.add(new_post)
