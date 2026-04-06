@@ -40,7 +40,7 @@ async def read_users_me(current_user: str = Depends(get_current_user)):
     
 @router.get("/{id}",response_model=UserPublic)   
 async def get_user(id=int,db: Session=Depends(get_db)):
-    """ Finds an user by their id. If isn't founded,
+    """ Finds an user by their id. If it isn't founded,
     it will raise an status code of 404.
 
     Args:

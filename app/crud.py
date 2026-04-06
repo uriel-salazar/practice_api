@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
+from fastapi import UploadFile,File
 from .schemas import Create_User,Update_User,Create_Post,Response_Post
 from .auth import hash_password
 
@@ -94,8 +95,10 @@ def delete_user(db:Session,id:int):
 def create_post(db: Session, post: Create_Post,current_user:User) -> Post:
     new_post = Post(
         description=post.description,
-        user_id=current_user.id
+        user_id=current_user.id,
+        url_image=post.url_image
     )
+    
 
     db.add(new_post)
     db.commit()

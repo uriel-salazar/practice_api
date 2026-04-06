@@ -60,6 +60,7 @@ class Update_User(BaseModel):
 
 class Create_Post(BaseModel):
       description:str
+      url_image:str
     
 
 class Response_Post(BaseModel):
