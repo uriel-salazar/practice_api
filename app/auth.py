@@ -1,6 +1,9 @@
 from datetime import UTC,datetime,timedelta
 from pwdlib import PasswordHash
 from fastapi import Depends,HTTPException
+from sqlalchemy.orm import Session
+from app.models import User
+from app.database import get_db
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError,jwt
 from .config import settings
@@ -37,19 +40,22 @@ def create_access_token(data:dict,expires_delta:timedelta | None = None) -> str:
     return encoded_jwt # returns JWT acces token.
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme),db:Session=Depends(get_db)):
     """We a use our variables .env from our class settings,
     instead of passing it directly from load dotenv()"""
     
     try:
         payload = jwt.decode(token,
                              settings.secret_key.get_secret_value(),algorithms=[settings.algorithm])
-        user_id =payload.get("sub")
+        user_email =payload.get("sub")
 
-        if user_id is None:
+        if user_email is None:
             raise HTTPException(status_code=401,detail="Invalid Token")
+        
+        # Executes a query to verify email.
+        user=db.query(User).filter(User.email==user_email).first()
 
-        return user_id
+        return user
     
 
     except JWTError:
