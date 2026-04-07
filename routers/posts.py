@@ -28,7 +28,6 @@ async def create_post_endpoint(
     Returns:
         _type_: _description_
     """
-    filename_str = image.filename or "file.jpg"
     
     BASE_DIR = Path(__file__).resolve().parent.parent # goes up to find the folder 
     UPLOAD_DIR = BASE_DIR / "app" / "images"
@@ -36,10 +35,14 @@ async def create_post_endpoint(
     #creates folder if it doesn't exist.
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True) 
     #creates an unique filename 
-    safe_filename = f"{uuid.uuid4()}__{Path(filename_str).name}"
-    file_location = UPLOAD_DIR / safe_filename 
-    image_url=None
+    
+    # It defaults to 'None' if no image was sent.
+    image_url=None 
+    
     if image:
+        filename_str = image.filename or "file.jpg"
+        safe_filename = f"{uuid.uuid4()}__{Path(filename_str).name}"
+        file_location = UPLOAD_DIR / safe_filename 
         try:
             with open(file_location, "wb") as buffer:
                 buffer.write(await image.read())
