@@ -65,6 +65,7 @@ class Create_Post(BaseModel):
 class Response_Post(BaseModel):
     description : str | None = None
     image_url:str
+    user_id:int
     class Config:
         from_attributes = True
         

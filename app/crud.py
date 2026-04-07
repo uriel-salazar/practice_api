@@ -93,11 +93,12 @@ def delete_user(db:Session,id:int):
         db.refresh
     return delete
 
-def create_post(db: Session,
-    description:str=Form(...),image_url:UploadFile=File(...)) -> Post:
+def create_post(db: Session,description:str,image_url:str,
+    user_id:int) -> Post:
     new_post = Post(
         description=description,
-        image_url=image_url
+        image_url=image_url,
+        user_id=user_id
     )
    
     

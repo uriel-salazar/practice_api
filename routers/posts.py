@@ -11,7 +11,7 @@ import os,uuid,shutil
 router=APIRouter()
 
 @router.post("",response_model=Response_Post)
-def create_post(post: Create_Post, db: Session = Depends(get_db),
+def create_post(db: Session = Depends(get_db),
         current_user=Depends(get_current_user),images:UploadFile=File(...)):
 
     UPLOAD_DIR = "images"
@@ -26,7 +26,7 @@ def create_post(post: Create_Post, db: Session = Depends(get_db),
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(images.file, buffer)
 
-    return crud.create_post(db,post,current_user,file_path)
+    return crud.create_post(db,current_user)
 
 
 @router.get("/{user_id}",response_model=Response_Post)
