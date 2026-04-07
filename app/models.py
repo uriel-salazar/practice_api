@@ -35,7 +35,6 @@ class Post(Base):
     user_id:Mapped[int] = mapped_column(ForeignKey("user.id"))
     description:Mapped[str] = mapped_column(nullable=False)
     image_url:Mapped[str] = mapped_column(nullable=False)
-   # image_path:Mapped[str] = mapped_column(nullable=True)
     user:Mapped['User'] = relationship('User',back_populates='posts')
 
 

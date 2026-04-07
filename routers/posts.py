@@ -1,4 +1,4 @@
-from fastapi import Depends,HTTPException,APIRouter,UploadFile,File
+from fastapi import Depends,HTTPException,APIRouter,UploadFile,File,Form
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from app.database import Base,engine,get_db
@@ -11,23 +11,25 @@ import os,uuid,shutil
 router=APIRouter()
 
 @router.post("",response_model=Response_Post)
-def create_post(db: Session = Depends(get_db),
-        current_user=Depends(get_current_user),images:UploadFile=File(...)):
+async def create_post_endpoint(
+    description: str = Form(...),
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    import uuid
 
-    UPLOAD_DIR = "images"
+    file_location = f"images/{uuid.uuid4()}_{image.filename}"
 
-    if not os.path.exists(UPLOAD_DIR):
-        os.makedirs(UPLOAD_DIR)
+    with open(file_location, "wb") as buffer:
+        buffer.write(await image.read())
 
-    filename = f"{uuid.uuid4()}.jpg"
-    file_path = f"{UPLOAD_DIR}/{filename}"
-
-    # Saves the image 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(images.file, buffer)
-
-    return crud.create_post(db,current_user)
-
+    return crud.create_post(
+        db=db,
+        description=description,
+        image_url=file_location,
+        user_id=current_user.id
+    )
 
 @router.get("/{user_id}",response_model=Response_Post)
 def get_post(user_id:int,db: Session = Depends(get_db)):
