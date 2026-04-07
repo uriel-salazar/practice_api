@@ -15,7 +15,7 @@ router=APIRouter()
 @router.post("",response_model=Response_Post)
 async def create_post_endpoint(
     description: str = Form(...),
-    image: UploadFile = File(...),
+    image: UploadFile = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -38,19 +38,20 @@ async def create_post_endpoint(
     #creates an unique filename 
     safe_filename = f"{uuid.uuid4()}__{Path(filename_str).name}"
     file_location = UPLOAD_DIR / safe_filename 
-
-    try:
-        with open(file_location, "wb") as buffer:
-            buffer.write(await image.read())
-            
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
-
+    image_url=None
+    if image:
+        try:
+            with open(file_location, "wb") as buffer:
+                buffer.write(await image.read())
+            image_url=str(file_location)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
+        
     return crud.create_post(
         db=db,
         description=description,
-        image_url=str(file_location),
-        user_id=current_user.id
+        user_id=current_user.id,
+        image_url=image_url
     )
 
 @router.get("/{user_id}",response_model=Response_Post)

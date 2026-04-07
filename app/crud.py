@@ -91,8 +91,7 @@ def delete_user(db:Session,id:int):
         db.refresh
     return delete
 
-def create_post(db: Session,description:str,image_url:str,
-    user_id:int) -> Post:
+def create_post(db: Session,description:str,user_id:int,image_url:str | None=None) -> Post:
     new_post = Post(
         description=description,
         image_url=image_url,

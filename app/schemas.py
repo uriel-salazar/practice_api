@@ -1,7 +1,6 @@
 from pydantic import BaseModel,Field,EmailStr
 from pydantic import BaseModel,Field,EmailStr
-
-
+from typing import Optional
 
 class Create_User(BaseModel):
     """ A Pydantic model that check users email, age and email. 
@@ -60,11 +59,12 @@ class Update_User(BaseModel):
 
 class Create_Post(BaseModel):
       description:str
+      
     
 
 class Response_Post(BaseModel):
-    description : str | None = None
-    image_url:str
+    description : str
+    image_url:Optional[str]=None
     user_id:int
     class Config:
         from_attributes = True
