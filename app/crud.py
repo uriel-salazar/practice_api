@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
 from .models import User,Post
-from fastapi import UploadFile,File
+from fastapi import UploadFile,File,Form
 from .schemas import Create_User,Update_User,Create_Post,Response_Post
 from .auth import hash_password
+import shutil
 
 def get_user(db: Session, user_id=User.id):
     """Gets a single user by their ID.
@@ -92,12 +93,13 @@ def delete_user(db:Session,id:int):
         db.refresh
     return delete
 
-def create_post(db: Session, post: Create_Post,current_user:User) -> Post:
+def create_post(db: Session,
+    description:str=Form(...),image_url:UploadFile=File(...)) -> Post:
     new_post = Post(
-        description=post.description,
-        user_id=current_user.id,
-        url_image=post.url_image
+        description=description,
+        image_url=image_url
     )
+   
     
 
     db.add(new_post)

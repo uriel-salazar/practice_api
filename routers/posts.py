@@ -1,15 +1,32 @@
-from fastapi import Depends,HTTPException,APIRouter
+from fastapi import Depends,HTTPException,APIRouter,UploadFile,File
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from app.database import Base,engine,get_db
 from app import crud
+from app.models import User
 from app.auth import get_current_user
 import uvicorn
+from sqlalchemy import func 
+import os,uuid,shutil
 router=APIRouter()
 
-@router.post("")
-def create_post(post: Create_Post, db: Session = Depends(get_db),current_user=Depends(get_current_user)):
-    return crud.create_post(db,post,current_user)
+@router.post("",response_model=Response_Post)
+def create_post(post: Create_Post, db: Session = Depends(get_db),
+        current_user=Depends(get_current_user),images:UploadFile=File(...)):
+
+    UPLOAD_DIR = "images"
+
+    if not os.path.exists(UPLOAD_DIR):
+        os.makedirs(UPLOAD_DIR)
+
+    filename = f"{uuid.uuid4()}.jpg"
+    file_path = f"{UPLOAD_DIR}/{filename}"
+
+    # Saves the image 
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(images.file, buffer)
+
+    return crud.create_post(db,post,current_user,file_path)
 
 
 @router.get("/{user_id}",response_model=Response_Post)

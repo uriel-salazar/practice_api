@@ -62,7 +62,9 @@ async def get_user(id=int,db: Session=Depends(get_db)):
     return user
   
 @router.post("",response_model=UserPrivate)
-async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
+async def create_user(u_create: Create_User,db: Session = Depends(get_db)
+    ):
+    
     """ Creates a new user 
 
     Args:
@@ -77,6 +79,7 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)):
     """
     
     # Check the existence of an email ( to avoid duplicated emails.) : 
+    
     email_exist=db.query(User).filter(func.lower(User.email)==u_create.email.lower()).first()
     # If it exists, it raises an error.
     if email_exist:

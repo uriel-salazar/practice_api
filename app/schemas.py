@@ -60,12 +60,12 @@ class Update_User(BaseModel):
 
 class Create_Post(BaseModel):
       description:str
-      url_image:str
     
 
 class Response_Post(BaseModel):
     description : str | None = None
-    class Config():
+    image_url:str
+    class Config:
         from_attributes = True
         
 class Token(BaseModel):
