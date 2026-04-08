@@ -38,10 +38,12 @@ async def create_post_endpoint(
     
     # It defaults to 'None' if no image was sent.
     image_url=None 
-    
     if image:
         filename_str = image.filename or "file.jpg"
+        
+        # Adds a safe file name to avoid duplicated filenames.
         safe_filename = f"{uuid.uuid4()}__{Path(filename_str).name}"
+        
         file_location = UPLOAD_DIR / safe_filename 
         try:
             with open(file_location, "wb") as buffer:
