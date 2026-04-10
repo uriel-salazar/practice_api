@@ -2,14 +2,14 @@ from fastapi import Depends,HTTPException,APIRouter,UploadFile,File,Form
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from pathlib import Path
+from routers.resize import image_resize_800
 from app.database import Base,engine,get_db
 from app import crud
-import os
+from PIL import Image
+from io import BytesIO
 from app.models import User
 from app.auth import get_current_user
-import uvicorn
-from sqlalchemy import func 
-import os,uuid,shutil
+import os,uuid
 router=APIRouter()
 
 @router.post("",response_model=Response_Post)
@@ -39,6 +39,9 @@ async def create_post_endpoint(
     # It defaults to 'None' if no image was sent.
     image_url=None 
     if image:
+        contents=await image.read()
+        i=image_resize_800(contents)
+        
         filename_str = image.filename or "file.jpg"
         
         # Adds a safe file name to avoid duplicated filenames.
@@ -47,8 +50,11 @@ async def create_post_endpoint(
         file_location = UPLOAD_DIR / safe_filename 
         try:
             with open(file_location, "wb") as buffer:
-                buffer.write(await image.read())
-            image_url=str(file_location)
+                img_bytes = BytesIO()
+                # turns image  object to bytes :
+                i.save(img_bytes, format="JPEG")  
+                buffer.write(img_bytes.getvalue()) 
+                image_url=str(file_location)
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
         
