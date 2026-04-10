@@ -38,6 +38,7 @@ async def create_post_endpoint(
     
     # It defaults to 'None' if no image was sent.
     image_url=None 
+    
     if image:
         contents=await image.read()
         i=image_resize_800(contents)
@@ -46,15 +47,16 @@ async def create_post_endpoint(
         
         # Adds a safe file name to avoid duplicated filenames.
         safe_filename = f"{uuid.uuid4()}__{Path(filename_str).name}"
-        
         file_location = UPLOAD_DIR / safe_filename 
+        
         try:
             with open(file_location, "wb") as buffer:
                 img_bytes = BytesIO()
                 # turns image  object to bytes :
-                i.save(img_bytes, format="JPEG")  
+                i.save(img_bytes,format="JPEG",quality=85,optimize=True)  
                 buffer.write(img_bytes.getvalue()) 
                 image_url=str(file_location)
+                
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
         
@@ -70,7 +72,7 @@ def get_post(user_id:int,db: Session = Depends(get_db)):
     get_one=crud.get_post(db,user_id)
     
     if get_one is None:
-        HTTPException(status_code=404,detail="We couldn't find your post.")
+        raise HTTPException(status_code=404,detail="We couldn't find your post.")
     return get_one
 
 
@@ -79,5 +81,8 @@ def get_posts(skip:int =1,limit : int=10,
     db:Session = Depends(get_db)):
     
     posts=crud.get_posts(db,skip=skip,limit=limit)
+    
+    if posts is None:
+        raise HTTPException(status_code=404,detail="No posts available.")
     return posts
 

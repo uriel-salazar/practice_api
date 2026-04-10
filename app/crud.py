@@ -109,11 +109,12 @@ def create_post(db: Session,description:str,user_id:int,image_url:str | None=Non
 def get_post(db:Session,id:int):
     
     get=db.query(Post).filter(Post.user_id==id).first()
+    if get is None:
+        return None
     return get
 
 
 def get_posts(db:Session,skip:int,limit:int):
     posts=db.query(Post).offset(skip).limit(limit).all()
-
     return posts
     
