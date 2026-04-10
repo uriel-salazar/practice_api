@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends,HTTPException,APIRouter
+from fastapi import FastAPI,Depends,HTTPException,APIRouter,status
 from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas import UserPublic,Create_User,Update_User,UserPrivate,Token
 from sqlalchemy.orm import Session
@@ -57,7 +57,9 @@ async def get_user(id=int,db: Session=Depends(get_db)):
     user=db.query(User).filter(User.id == id).first()
       
     if not user:
-           raise HTTPException(status_code=404,detail="User not found")
+           raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found")
       
     return user
   
@@ -83,7 +85,9 @@ async def create_user(u_create: Create_User,db: Session = Depends(get_db)
     email_exist=db.query(User).filter(func.lower(User.email)==u_create.email.lower()).first()
     # If it exists, it raises an error.
     if email_exist:
-        raise HTTPException(status_code=400,detail='Email already exists')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Email already exists')
 
     return crud.create_user(db,u_create)
 
@@ -101,7 +105,9 @@ async def update_user(update_u:Update_User,id,db:Session=Depends(get_db)):
     user=crud.update_user(db,update_u,id)
     
     if user is None:
-        raise HTTPException(status_code=404,detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not found")
     
     return user
 
@@ -110,7 +116,8 @@ async def delete_user(id:int,db: Session = Depends(get_db)):
     delete=crud.delete_user(db,id)
     
     if delete is None:
-        raise HTTPException(status_code=400,detail="User not found")
+        raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,detail="User not found")
     
     return f"User deleted succesful!"
 
@@ -129,7 +136,7 @@ async def log_in_access(
   # If user exists 
   if not user:
         raise HTTPException(
-            status_code=401,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
 
@@ -137,7 +144,7 @@ async def log_in_access(
   if  not verify_password(form_data.password, user.hashed_password):
         
         raise HTTPException(
-            status_code=401,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
   

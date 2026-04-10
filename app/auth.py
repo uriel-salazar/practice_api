@@ -1,6 +1,6 @@
 from datetime import UTC,datetime,timedelta
 from pwdlib import PasswordHash
-from fastapi import Depends,HTTPException
+from fastapi import Depends,HTTPException,status
 from sqlalchemy.orm import Session
 from app.models import User
 from app.database import get_db
@@ -50,7 +50,8 @@ def get_current_user(token: str = Depends(oauth2_scheme),db:Session=Depends(get_
         user_email =payload.get("sub")
 
         if user_email is None:
-            raise HTTPException(status_code=401,detail="Invalid Token")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED
+        ,detail="Invalid Token")
         
         # Executes a query to verify email.
         user=db.query(User).filter(User.email==user_email).first()
@@ -59,5 +60,6 @@ def get_current_user(token: str = Depends(oauth2_scheme),db:Session=Depends(get_
     
 
     except JWTError:
-        raise HTTPException(status_code=401,detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED
+        ,detail="Invalid token")
 

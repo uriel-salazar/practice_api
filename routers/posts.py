@@ -1,4 +1,4 @@
-from fastapi import Depends,HTTPException,APIRouter,UploadFile,File,Form
+from fastapi import Depends,HTTPException,APIRouter,UploadFile,File,Form,status
 from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from pathlib import Path
@@ -58,7 +58,7 @@ async def create_post_endpoint(
                 image_url=str(file_location)
                 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to save file: {e}")
         
     return crud.create_post(
         db=db,
@@ -72,7 +72,8 @@ def get_post(user_id:int,db: Session = Depends(get_db)):
     get_one=crud.get_post(db,user_id)
     
     if get_one is None:
-        raise HTTPException(status_code=404,detail="We couldn't find your post.")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        ,detail="We couldn't find your post.")
     return get_one
 
 
@@ -83,6 +84,7 @@ def get_posts(skip:int =1,limit : int=10,
     posts=crud.get_posts(db,skip=skip,limit=limit)
     
     if posts is None:
-        raise HTTPException(status_code=404,detail="No posts available.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND
+        ,detail="No posts available.")
     return posts
 
