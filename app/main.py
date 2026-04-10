@@ -15,6 +15,7 @@ app.include_router(posts.router,prefix="/posts",tags=["Posts"])
 
 @app.get("/",response_class=HTMLResponse)
 async def welcome():
+
     return "<h1> Welcome ! </h1>"
 
 
