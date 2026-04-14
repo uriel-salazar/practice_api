@@ -41,7 +41,7 @@ async def create_post_endpoint(
     
     if image:
         contents=await image.read()
-        i=image_resize_800(contents)
+        resized_image=image_resize_800(contents)
         
         filename_str = image.filename or "file.jpg"
         
@@ -53,7 +53,7 @@ async def create_post_endpoint(
             with open(file_location, "wb") as buffer:
                 img_bytes = BytesIO()
                 # turns image  object to bytes :
-                i.save(img_bytes,format="JPEG",quality=85,optimize=True)  
+                resized_image.save(img_bytes,format="JPEG",quality=85,optimize=True)  
                 buffer.write(img_bytes.getvalue()) 
                 image_url=str(file_location)
                 

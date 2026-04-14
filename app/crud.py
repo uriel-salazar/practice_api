@@ -16,7 +16,7 @@ def get_user(db: Session, user_id=User.id):
     return db.query(User).filter(User.id == user_id).first()
 
 
-def get_users(db: Session, skip: int, limit: int):
+def get_users(db: Session, skip: int, limit: int,name:str| None= None):
     """Gets a list of users with pagination.
 
     Args:
@@ -27,7 +27,15 @@ def get_users(db: Session, skip: int, limit: int):
     Returns:
         list[User]: A list of users.
     """
-    return db.query(User).offset(skip).limit(limit).all()
+    query=db.query(User)
+    
+    if name:
+        #It searches for users whose name contains whatever the user typed
+        #using ILIKE from SQL.
+        query=query.filter(User.name.ilike(f"%{name}%"))
+        
+    
+    return query.offset(skip).limit(limit).all()
 
 
 def create_user(db: Session, Create_User):
@@ -109,6 +117,7 @@ def create_post(db: Session,description:str,user_id:int,image_url:str | None=Non
 def get_post(db:Session,id:int):
     
     get=db.query(Post).filter(Post.user_id==id).first()
+    
     if get is None:
         return None
     return get

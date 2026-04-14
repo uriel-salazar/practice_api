@@ -17,9 +17,10 @@ router = APIRouter()
 
 
 @router.get("",response_model=list[UserPublic])
-async def get_users(skip:int=1,limit: int=10,
-         db:Session = Depends(get_db)):
-    """ Gets all user from a list of "User Response"
+async def get_users(skip:int=0,limit: int=10,
+         db:Session = Depends(get_db),name:str | None=None):
+    """ Gets all user from a list of "User Response" 
+    and adds an optional filter for name.
 
     Args:
         skip (int): Defaults to 1.
@@ -30,7 +31,8 @@ async def get_users(skip:int=1,limit: int=10,
         (list) Get's a list of users 
     """
     
-    return crud.get_users(db,skip =skip,limit =limit)
+    return crud.get_users(db,skip =skip,limit =limit,
+        name=name)
 
 
 @router.get("/me")
