@@ -3,9 +3,8 @@ from app.schemas import Create_Post,Response_Post
 from sqlalchemy.orm import Session
 from pathlib import Path
 from routers.resize import image_resize_800
-from app.database import Base,engine,get_db
+from app.database import get_db
 from app import crud
-from PIL import Image
 from io import BytesIO
 from app.models import User
 from app.auth import get_current_user
@@ -22,11 +21,7 @@ async def create_post_endpoint(
     """  Creates a post 
     Saves the image and it finds where to store it.
     If isn't found, it raises a 500 error.
-    Raises:
-        HTTPException: _description_
 
-    Returns:
-        _type_: _description_
     """
     
     BASE_DIR = Path(__file__).resolve().parent.parent # goes up to find the folder 
@@ -69,10 +64,11 @@ async def create_post_endpoint(
 
 @router.get("/{user_id}",response_model=Response_Post)
 def get_post(user_id:int,db: Session = Depends(get_db)):
+    
     get_one=crud.get_post(db,user_id)
     
     if get_one is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND
         ,detail="We couldn't find your post.")
     return get_one
 

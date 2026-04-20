@@ -58,7 +58,7 @@ async def get_user(id=int,db: Session=Depends(get_db)):
     
     user=db.query(User).filter(User.id == id).first()
       
-    if not user:
+    if user is None:
            raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found")
